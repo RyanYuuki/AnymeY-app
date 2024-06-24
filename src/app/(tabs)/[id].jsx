@@ -7,12 +7,15 @@ import {
   Alert,
   ScrollView,
   Animated,
-  Image
+  Image,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useTheme } from "../../provider/ThemeProvider";
 import { Easing } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
+import { StyledButton } from "../../components/Themed";
+
 const ItemDetailsPage = () => {
   const { id } = useLocalSearchParams();
   const [data, setData] = useState([]);
@@ -42,8 +45,8 @@ const ItemDetailsPage = () => {
       Animated.loop(
         Animated.sequence([
           Animated.timing(scrollX, {
-            toValue: -300, 
-            duration: 10000, 
+            toValue: -300,
+            duration: 10000,
             easing: Easing.linear,
             useNativeDriver: true,
           }),
@@ -79,6 +82,11 @@ const ItemDetailsPage = () => {
           ]}
           blurRadius={1}
         />
+        <LinearGradient
+          colors={['transparent', 'rgba(0, 0, 0, 0.7)', 'black']}
+          style={StyleSheet.absoluteFillObject}
+          locations={[0, 0.5, 1]}
+        />
         <View style={styles.animeCard}>
           <Image
             source={{ uri: data?.image }}
@@ -96,6 +104,9 @@ const ItemDetailsPage = () => {
           </View>
         </View>
       </View>
+      <View style={styles.body}>
+        <StyledButton theme={theme} buttonStyle={styles.contextButton} >Add To List</StyledButton>
+      </View>
     </ScrollView>
   );
 };
@@ -107,20 +118,19 @@ const styles = StyleSheet.create({
   carousel: {
     justifyContent: "center",
     alignItems: "center",
-    width: 400,
+    width: '100%', // Adjust width to 100%
     borderRadius: 20,
-    overflow: "hidden",
+    overflow: 'hidden', // Ensure gradient doesn't overflow
   },
   carouselImage: {
-    height: 400,
-    width: 1000, 
+    height: 500,
+    width: 1000,
     resizeMode: "cover",
   },
   info: {
     height: 200,
     paddingHorizontal: 15,
     paddingBottom: 10,
-    overflow: "hidden",
     justifyContent: "flex-end",
   },
   carouselText: {
@@ -161,6 +171,27 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.6)",
     fontFamily: "Poppins_500Medium",
   },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contextButton: {
+    width: 200,
+    height: 50,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  }
 });
 
 export default ItemDetailsPage;

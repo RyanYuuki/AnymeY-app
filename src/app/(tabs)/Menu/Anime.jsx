@@ -94,7 +94,9 @@ const Anime = () => {
           <FlatList
             data={data}
             renderItem={({ item }) => <Carousel result={item} />}
-            keyExtractor={(item, index) => item.id?.toString() || index.toString()}
+            keyExtractor={(item, index) =>
+              item.id?.toString() || index.toString()
+            }
             contentContainerStyle={styles.carousel}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -154,7 +156,9 @@ const Anime = () => {
             renderItem={({ item }) => (
               <CarouselItem isManga={false} result={item} />
             )}
-            keyExtractor={(item, index) => item.id?.toString() || index.toString()} // Ensure unique keys
+            keyExtractor={(item, index) =>
+              item.id?.toString() || index.toString()
+            }
             contentContainerStyle={styles.carouselItem}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -208,6 +212,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
+  carousel: {
+    position: 'absolute',
+    height: 400,
+  },
   seasonsContainer: {
     marginTop: 20,
     paddingHorizontal: 20,
@@ -247,7 +255,7 @@ const styles = StyleSheet.create({
     height: 500,
     marginVertical: 20,
     paddingRight: 20,
-    paddingBottom: 100
+    paddingBottom: 100,
   },
   loader: {
     marginTop: 20,
