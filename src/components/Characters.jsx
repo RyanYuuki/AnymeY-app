@@ -1,29 +1,16 @@
 import React from "react";
 import { View, StyleSheet, Image, Pressable } from "react-native";
 import { StyledText } from "./Themed";
-import { Link } from "expo-router";
-const CarouselItem = ({ result, fontSize }) => {
+const Character = ({ result }) => {
   const id = result.id;
-  const title =
-    result.title
-      ? result.title.english
-        ? result.title.english
-        : result.title.romaji
-        ? result.title.romaji
-        : result.title.native
-        ? result.title.native
-        : "Undefined"
-      : "Untitled";
   return (
-    <Link href={`/Context/${id}`} asChild>
       <Pressable style={styles.carousel}>
         <Image source={{ uri: result?.image }} style={styles.carouselImage} />
         <View style={styles.textContainer}>
-          <StyledText size={fontSize} style={styles.carouselText}>{title}</StyledText>
-          <StyledText color={'grey'} size={14} isRightAligned={false} isCentered={true} isBold={true} isItalic={true}>~ | {result.totalEpisodes || '24'}</StyledText>
+          <StyledText style={styles.carouselText}>{result.name.full}</StyledText>
+          <StyledText size={12} isRightAligned={true} isItalic={true} color={'grey'}>~ {result.role}</StyledText>
         </View>
       </Pressable>
-    </Link>
   );
 };
 
@@ -41,13 +28,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   textContainer: {
+    width: '100%',
     paddingVertical: 5,
   },
   carouselText: {
-    textAlign: 'left',
+    textAlign: "left",
     fontSize: 14,
     marginTop: 5,
   },
 });
 
-export default CarouselItem;
+export default Character;

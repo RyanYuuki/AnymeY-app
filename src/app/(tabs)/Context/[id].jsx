@@ -19,6 +19,7 @@ import { StyledButton, StyledText } from "../../../components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import ImageBackgroundButton from "../../../components/ImageBackgroundButton";
 import CarouselItem from "../../../components/Carousel";
+import Character from "../../../components/Characters";
 
 const ItemDetailsPage = () => {
   const [favouritePressed, setFavouritePressed] = useState(false);
@@ -26,6 +27,7 @@ const ItemDetailsPage = () => {
   const { id } = useLocalSearchParams();
   const [data, setData] = useState([]);
   const [recommendationData, setRecommendationData] = useState([]);
+  const [characterData, setCharacterData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { theme } = useTheme();
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -51,6 +53,7 @@ const ItemDetailsPage = () => {
         const animedata = await response.json();
         setData(animedata);
         setRecommendationData(animedata.recommendations);
+        setCharacterData(animedata.characters);
       } catch (error) {
         Alert.warn(error);
       } finally {
@@ -264,6 +267,23 @@ const ItemDetailsPage = () => {
               </ImageBackgroundButton>
             ))}
           </View>
+          <View style={styles.charactersSection}>
+            <StyledText isBold={true}>Characters</StyledText>
+            {loading && characterData ? (
+              <ActivityIndicator></ActivityIndicator>
+            ) : (
+              <FlatList
+                data={characterData}
+                renderItem={({ item }) => <Character result={item} />}
+                keyExtractor={(item, index) =>
+                  item.name?.toString() || index.toString()
+                }
+                contentContainerStyle={styles.carouselContainer}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            )}
+          </View>
           <View style={styles.recommendationSection}>
             <StyledText isBold={true}>Recommended</StyledText>
             {loading && !data.recommendations ? (
@@ -381,7 +401,8 @@ const styles = StyleSheet.create({
   recommendations: {},
   carouselContainer: {
     height: 300,
-    gap: 30,
+    gap: 20,
+    marginVertical: 10,
   },
 });
 

@@ -4,20 +4,24 @@ import {
   useFonts,
   Poppins_500Medium,
   Poppins_700Bold,
+  Poppins_700Bold_Italic,
+  Poppins_500Medium_Italic,
 } from "@expo-google-fonts/poppins";
 import { useTheme } from "../provider/ThemeProvider";
-export const StyledText = ({ NotTruncated, style, children, isBold, isRightAligned, color, size }) => {
+export const StyledText = ({ isCentered, NotTruncated, style, children, isBold, isRightAligned, color, size, isItalic }) => {
   const { theme } = useTheme();
   const [fontsLoaded] = useFonts({
     Poppins_500Medium,
     Poppins_700Bold,
+    Poppins_500Medium_Italic,
+    Poppins_700Bold_Italic
   });
   if (!fontsLoaded) {
     return null;
   }
 
   let truncatedChildren = children;
-  if ( children.length > 25) {
+  if ( children.length > 18) {
     truncatedChildren = children.substring(0, 25) + "...";
   }
 
@@ -28,8 +32,8 @@ export const StyledText = ({ NotTruncated, style, children, isBold, isRightAlign
         {
           fontSize: size ? size : 16,
           color: ( color ? color : theme.text ) ,
-          textAlign: isRightAligned ? "right" : "",
-          fontFamily: isBold ? "Poppins_700Bold" : "Poppins_500Medium",
+          textAlign: isRightAligned ? "right" : ( isCentered ? "center" : ""),
+          fontFamily: isBold ? ( isItalic ? "Poppins_700Bold_Italic" : "Poppins_700Bold") : (( isItalic ? "Poppins_500Medium_Italic" : "Poppins_500Medium")),
         },
       ]}
     >

@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import themes from "@/constants/Colors";
 import { useTheme } from "../../../provider/ThemeProvider";
-
+import { FontAwesome } from "@expo/vector-icons";
 export default function TabLayout() {
   const { theme, toggleTheme } = useTheme();
 
@@ -76,10 +76,11 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
+            <FontAwesome
+              name={'home'}
               size={23}
               color={focused ? theme.tabIconSelected : theme.tabIconDefault}
+              solid={true}
             />
           ),
         }}

@@ -111,7 +111,7 @@ const Home = () => {
         ) : (
           <FlatList
             data={carouselData}
-            renderItem={({ item }) => <CarouselItem result={item} />}
+            renderItem={({ item }) => <CarouselItem fontSize={14} result={item} />}
             contentContainerStyle={styles.carouselContainer}
             horizontal
             showsHorizontalScrollIndicator={false}
