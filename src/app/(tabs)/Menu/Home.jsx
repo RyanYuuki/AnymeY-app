@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  Text,
   View,
   StyleSheet,
   Image,
@@ -8,14 +9,14 @@ import {
   ScrollView,
 } from "react-native";
 import { useTheme } from "../../../provider/ThemeProvider";
-import { StyledButton, StyledText } from "@/components/Themed";
+import { StyledText } from "../../../components/Themed";
 import CarouselItem from "../../../components/Carousel";
 import { router } from "expo-router";
-
+import ImageBackgroundButton from "../../../components/ImageBackgroundButton";
 const Home = () => {
   const [mangaData, setMangaData] = useState([]);
   const [carouselData, setCarouselData] = useState([]);
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const Home = () => {
           "https://consumet-api-two-nu.vercel.app/meta/anilist/trending"
         );
         const animeResult = await response.json();
-        if (animeResult && animeResult.results) {
+        if (animeResult && animeResult.results.length > 0 ) {
           setCarouselData(animeResult.results);
         }
       } catch (error) {
@@ -34,7 +35,7 @@ const Home = () => {
         setIsLoading(false);
       }
     };
-    const fetchManagData = async () => {
+    const fetchMangaData = async () => {
       for (let i = 20; i <= 30; i++) {
         const response2 = await fetch(
           `https://consumet-api-two-nu.vercel.app/meta/anilist-manga/info/${i}?provider=mangadex`
@@ -43,15 +44,14 @@ const Home = () => {
         if (result2) {
           if (mangaData.length < 10) {
             setMangaData((prevMangaData) => [...prevMangaData, result2]);
-          }
-          else {
+          } else {
             break;
           }
         }
       }
-    }
+    };
     fetchData();
-    fetchManagData();
+    fetchMangaData();
   }, []);
 
   return (
@@ -59,16 +59,15 @@ const Home = () => {
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <StyledText
-            theme={theme}
             style={{ ...styles.userInfoContent, fontSize: 16, marginTop: 19 }}
           >
             Ryan Yuuki
           </StyledText>
-          <StyledText theme={theme} style={styles.userInfoContent}>
-            Episode Watched: {"69"}
+          <StyledText style={styles.userInfoContent}>
+            Episode Watched:<Text style={{ color: theme.primary }}> 69</Text>
           </StyledText>
-          <StyledText theme={theme} style={styles.userInfoContent}>
-            Chapter Read: {"6900"}
+          <StyledText style={styles.userInfoContent}>
+            Chapter Read:<Text style={{ color: theme.primary }} > 6900</Text>
           </StyledText>
         </View>
 
@@ -82,25 +81,29 @@ const Home = () => {
 
       <View style={styles.body}>
         <View style={styles.contentList}>
-          <StyledButton
-            onPress={() => router.push("/menu/Animelist")}
-            theme={theme}
-            textStyle={styles.listButtonText}
-            buttonStyle={styles.listButton}
+          <ImageBackgroundButton
+            source={{
+              uri:
+                carouselData[1]?.cover ||
+                carouselData[2]?.cover
+            }}
+            onPress={() => router.push("/menu/mangalist")}
           >
             ANIME LIST
-          </StyledButton>
-          <StyledButton
+          </ImageBackgroundButton>
+          <ImageBackgroundButton
+            source={{
+              uri:
+                carouselData[8]?.cover ||
+                carouselData[5]?.cover
+            }}
             onPress={() => router.push("/menu/mangalist")}
-            theme={theme}
-            textStyle={styles.listButtonText}
-            buttonStyle={styles.listButton}
           >
             MANGA LIST
-          </StyledButton>
+          </ImageBackgroundButton>
         </View>
 
-        <StyledText theme={theme} style={styles.carouselHeading}>
+        <StyledText isBold={true} style={styles.carouselHeading}>
           Continue Watching
         </StyledText>
         {isLoading ? (
@@ -108,15 +111,14 @@ const Home = () => {
         ) : (
           <FlatList
             data={carouselData}
-            renderItem={({ item }) => <CarouselItem isManga={false} result={item} />}
-            keyExtractor={(item, index) => item.name?.toString() || index.toString() }
+            renderItem={({ item }) => <CarouselItem result={item} />}
             contentContainerStyle={styles.carouselContainer}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
         )}
 
-        <StyledText theme={theme} style={styles.carouselHeading}>
+        <StyledText isBold={true} style={styles.carouselHeading}>
           Continue Reading
         </StyledText>
         {isLoading ? (
@@ -124,8 +126,9 @@ const Home = () => {
         ) : (
           <FlatList
             data={mangaData}
-            renderItem={({ item }) => <CarouselItem isManga={true} result={item} />}
-            keyExtractor={(item, index) => item.name?.toString() || index.toString() }
+            renderItem={({ item }) => (
+              <CarouselItem result={item} />
+            )}
             contentContainerStyle={styles.carouselContainer}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -173,25 +176,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     marginBottom: 20,
   },
-  listButton: {
-    paddingHorizontal: 30,
-    paddingVertical: 25,
-    borderRadius: 20,
-    backgroundColor: "#eee",
-  },
-  listButtonText: {
-    fontSize: 16,
-    color: "black",
-    borderBottomWidth: 2,
-    borderBottomColor: "red",
-  },
   carouselHeading: {
     fontSize: 20,
     marginVertical: 20,
     marginLeft: 10,
   },
   carouselContainer: {
-    height: 300,
+    height: 290,
   },
 });
 

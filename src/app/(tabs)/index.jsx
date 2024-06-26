@@ -1,10 +1,15 @@
-import { View, Text } from 'react-native'
 import React from 'react'
-import { Redirect } from 'expo-router'
+import { Redirect, Stack } from 'expo-router'
 
 const index = () => {
   return (
+    <>
+    <Stack.Screen
+    options={{
+      headerShown: false,
+    }} />
       <Redirect href={'/Menu/Home'} ></Redirect>
+      </>
   )
 }
 

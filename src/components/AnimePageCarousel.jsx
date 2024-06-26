@@ -1,5 +1,13 @@
-import React from "react";
-import { View, StyleSheet, Image, Text, Pressable } from "react-native";
+import React, { useEffect, useRef } from "react";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Pressable,
+  Animated,
+} from "react-native";
+import { Easing } from "react-native-reanimated";
 import { useTheme } from "../provider/ThemeProvider";
 import {
   useFonts,
@@ -8,50 +16,94 @@ import {
 } from "@expo-google-fonts/poppins";
 import { Link } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { StyledText } from "./Themed";
 
-const Carousel = ({ result }) => {
-  const id = result.id;
+const Carousel = ({ result, isManga }) => {
+  const id = result.id;    
   const { theme } = useTheme();
   const [fontsLoaded] = useFonts({
     Poppins_500Medium,
     Poppins_700Bold,
   });
+  const scrollX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const startAnimation = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(scrollX, {
+            toValue: -600,
+            duration: 10000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scrollX, {
+            toValue: 20,
+            duration: 10000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    };
+    startAnimation();
+  }, [scrollX]);
 
   return (
-    <Link href={`/${id}`} asChild>
+    <Link href={`/Context/${id}`} asChild>
       <Pressable style={styles.carousel}>
         <View style={styles.imageContainer}>
-          <Image
+          <Animated.Image
             source={{ uri: result?.cover }}
-            style={styles.carouselImage}
+            style={[
+              styles.carouselImage,
+              { transform: [{ translateX: scrollX }] },
+            ]}
             blurRadius={2}
           />
-         <LinearGradient
-          colors={['transparent', 'rgba(0, 0, 0, 0.2)', 'black']}
-          style={StyleSheet.absoluteFillObject}
-          locations={[0, 0.5, 1.5]}
-        />
+          <LinearGradient
+            colors={["transparent", "rgba(0, 0, 0, 0.2)", "black"]}
+            style={StyleSheet.absoluteFillObject}
+            locations={[0, 0.5, 1.5]}
+          />
         </View>
         <View style={styles.animeCard}>
-          <Image source={{ uri: result?.image }} style={styles.animeCardImage} />
+          <Image
+            source={{ uri: result?.image }}
+            style={styles.animeCardImage}
+          />
           <View style={styles.info}>
-            <Text style={[styles.carouselText, { color: theme.text }]}>
-              {result?.title.english || result?.title.romaji}
-            </Text>
-            <Text style={[styles.carouselText, { color: 'red' }]}>
-              {result?.episodeNumber < 12
-                ? "Releasing"
-                : result?.episodeNumber === 12
-                ? "Finished"
-                : result?.episodeNumber === 24
-                ? "Finished"
-                : "Releasing"}
+            <StyledText
+              NotTruncated={true}
+              isBold={true}
+              color={"white"}
+              style={[styles.carouselText]}
+            >
+              {result?.title.romaji || result?.title.english}
+            </StyledText>
+            <Text style={[styles.carouselText, { color: "#df5198" }]}>
+              {result.status}
             </Text>
           </View>
           <View style={styles.animeInfo}>
-            <Text style={styles.episodeInfo}> 12 / {result.episodeNumber < 12 ? "12" : (result.episodeNumber === 12 ? '12' : '24')} Episodes</Text>
+            <Text style={styles.episodeInfo}>
+              {" "}
+              12 /{" "}
+              {result.episodeNumber < 12
+                ? "12"
+                : result.episodeNumber === 12
+                ? "12"
+                : "24"}{" "}
+              Episodes
+            </Text>
             <View style={styles.genres}>
-              {result.genres.map((data, i) => (i < 3 ? <Text style={styles.genre} key={i}>{data} {i === 2 ? '' : '•'}</Text> : null))}
+              {result.genres.map((data, i) =>
+                i < 3 ? (
+                  <Text style={styles.genre} key={i}>
+                    {data} {i === 2 ? "" : "•"}
+                  </Text>
+                ) : null
+              )}
             </View>
           </View>
         </View>
@@ -62,12 +114,12 @@ const Carousel = ({ result }) => {
 
 const styles = StyleSheet.create({
   carousel: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     width: 400,
     height: "100%",
     borderRadius: 20,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   imageContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -75,7 +127,7 @@ const styles = StyleSheet.create({
   },
   carouselImage: {
     height: "100%",
-    width: "100%",
+    width: 1000,
     resizeMode: "cover",
   },
   gradientOverlay: {
@@ -83,9 +135,11 @@ const styles = StyleSheet.create({
   },
   info: {
     height: 200,
-    paddingHorizontal: 10,
+    width: 240,
+    paddingHorizontal: 25,
     overflow: "hidden",
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
+    paddingVertical: 10,
   },
   carouselText: {
     width: 200,
@@ -96,36 +150,36 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 123,
     height: "66%",
-    width: '90%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: "90%",
+    flexDirection: "row",
+    alignItems: "center",
   },
   animeCardImage: {
     height: 190,
     width: 130,
     borderRadius: 20,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   animeInfo: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    flexDirection: 'row',
-    marginRight: 6
+    flexDirection: "row",
+    marginRight: 6,
   },
   genres: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginLeft: 30,
     gap: 10,
   },
   genre: {
-    fontFamily: 'Poppins_500Medium',
-    color: 'rgba(255, 255, 255, 0.6)',
+    fontFamily: "Poppins_500Medium",
+    color: "rgba(255, 255, 255, 0.6)",
   },
   episodeInfo: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontFamily: 'Poppins_500Medium',
-  }
+    color: "rgba(255, 255, 255, 0.6)",
+    fontFamily: "Poppins_500Medium",
+  },
 });
 
 export default Carousel;

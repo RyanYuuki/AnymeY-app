@@ -2,22 +2,26 @@ import { useColorScheme } from "react-native";
 
 export const themes = {
   light: {
-    text: '#333',
+    primary: '#d34d90',
+    text: 'black',
     background: '#eee',
     tabIconDefault: 'black',
     tabBackground: '#eee',
-    tabIconSelected: 'red',
+    tabIconSelected: '#d34d90',
     btnBackground: '#fff',
-    inputBackground: 'rgba(255, 255, 255, 0.5)',
+    inputBackground: 'rgba(0, 0, 0, 0.5)',
+    transparentBtn: 'rgba(255,255,255,0.5)'
   },
   dark: {
-    text: '#eee',
+    primary: '#d34d90',
+    text: 'white',
     background: 'black',
     tabBackground: '#333',
     tabIconDefault: '#ccc',
-    tabIconSelected: 'red',
+    tabIconSelected: '#d34d90',
     btnBackground: '#1A1A1A',
-    inputBackground: 'rgba(0, 0, 0, 0.5)',
+    inputBackground: 'rgba(255, 255, 255, 0.5)',
+    transparentBtn: 'rgba(0,0,0,0.5)'
   },
 };
 

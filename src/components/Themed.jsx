@@ -1,52 +1,109 @@
 import React from "react";
-import { Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useFonts, Poppins_500Medium, Poppins_700Bold } from "@expo-google-fonts/poppins";
-
-export const StyledText = ({ style, children, theme }) => {
+import { Text, TouchableOpacity, StyleSheet, TextInput } from "react-native";
+import {
+  useFonts,
+  Poppins_500Medium,
+  Poppins_700Bold,
+} from "@expo-google-fonts/poppins";
+import { useTheme } from "../provider/ThemeProvider";
+export const StyledText = ({ NotTruncated, style, children, isBold, isRightAligned, color, size }) => {
+  const { theme } = useTheme();
   const [fontsLoaded] = useFonts({
     Poppins_500Medium,
+    Poppins_700Bold,
+  });
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  let truncatedChildren = children;
+  if ( children.length > 25) {
+    truncatedChildren = children.substring(0, 25) + "...";
+  }
+
+  return (
+    <Text
+      style={[
+        style,
+        {
+          fontSize: size ? size : 16,
+          color: ( color ? color : theme.text ) ,
+          textAlign: isRightAligned ? "right" : "",
+          fontFamily: isBold ? "Poppins_700Bold" : "Poppins_500Medium",
+        },
+      ]}
+    >
+      {NotTruncated ? children : truncatedChildren}
+    </Text>
+  );
+};
+
+export const StyledButton = ({
+  customTextStyles,
+  isTransparent,
+  buttonStyle,
+  textStyle,
+  children,
+  onPress,
+}) => {
+  const { theme } = useTheme();
+  const [fontsLoaded] = useFonts({
+    Poppins_700Bold,
   });
 
   if (!fontsLoaded) {
     return null;
   }
 
-  let truncatedChildren = children;
-  if (children.length > 25) {
-    truncatedChildren = children.substring(0, 25) + "...";
-  }
-
-  return <Text style={[styles.text, style, { color: theme?.text }]}>{truncatedChildren}</Text>;
-};
-
-export const StyledButton = ({ buttonStyle, textStyle, children, theme, onPress }) => {
-  const [fontsLoaded] = useFonts({
-    Poppins_700Bold,
-  });
-
-  if (!fontsLoaded) {
-    return null; 
-  }
-
-  // Logic to truncate text if length exceeds 14 characters
-
-
   return (
     <TouchableOpacity
-      style={[ buttonStyle, { backgroundColor: theme?.btnBackground }]}
+      style={[
+        buttonStyle,
+        {
+          backgroundColor: isTransparent
+            ? theme.transparentBtn
+            : theme.btnBackground,
+          justifyContent: "center",
+          alignItems: "center",
+        },
+      ]}
       onPress={onPress}
     >
-      <Text style={[styles.buttonText, textStyle, { color: theme?.text }]}>{children}</Text>
+      <Text
+        style={[
+          styles.buttonText,
+          textStyle,
+          customTextStyles ? {} : { color: theme.text },
+        ]}
+      >
+        {children}
+      </Text>
     </TouchableOpacity>
   );
 };
 
+export const StyledInput = ({value, onChangeValue, style, onFocus}) => {
+  const { theme } = useTheme();
+  return (
+    <TextInput 
+    onFocus={onFocus}
+    value={value}
+    onBlur={onFocus}
+    onChangeText={onChangeValue}
+    style={{...style, ...styles.input, color: theme.text , backgroundColor: theme.Background}}
+    />
+  )
+}
+
 const styles = StyleSheet.create({
   text: {
-    fontFamily: "Poppins_500Medium",
     fontSize: 16,
   },
   buttonText: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 18,
+  },
+  input: {
     fontFamily: "Poppins_700Bold",
     fontSize: 18,
   },

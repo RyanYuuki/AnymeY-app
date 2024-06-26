@@ -8,6 +8,8 @@ import {
   FlatList,
   ActivityIndicator,
   ScrollView,
+  ImageBackground,
+  Pressable,
 } from "react-native";
 import { useTheme } from "../../../provider/ThemeProvider";
 import {
@@ -19,7 +21,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Carousel from "../../../components/AnimePageCarousel";
 import CarouselItem from "../../../components/Carousel";
 import { StyledButton, StyledText } from "../../../components/Themed";
-import { router } from "expo-router";
+import ImageBackgroundButton from "../../../components/ImageBackgroundButton";
+import { Link, router } from "expo-router";
 
 const Anime = () => {
   const [data, setData] = useState(null);
@@ -61,16 +64,16 @@ const Anime = () => {
     >
       <View style={styles.header}>
         <View style={styles.inputBox}>
-          <TextInput
-            value={inputValue}
-            onChangeText={setInputValue}
+          <View
             style={[
               styles.input,
-              { color: theme.text, backgroundColor: theme.inputBackground },
+              { color: theme.text, backgroundColor: "rgba(0,0,0,0.5)" },
             ]}
-            placeholder="ANIME"
-            placeholderTextColor={"white"}
-          />
+          >
+            <Pressable onPress={() => router.push("/AnimeSearch")}>
+              <StyledText isBold={true} >ANIME</StyledText>
+            </Pressable>
+          </View>
           <TouchableOpacity>
             <Ionicons
               name="search"
@@ -112,7 +115,6 @@ const Anime = () => {
           renderItem={({ item }) => (
             <StyledButton
               onPress={() => router.push(`/pages/${item}`)}
-              theme={theme}
               buttonStyle={styles.seasonButton}
               textStyle={{ fontSize: 15 }}
             >
@@ -122,28 +124,23 @@ const Anime = () => {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.seasonsContainer}
           horizontal
+          showsHorizontalScrollIndicator={false}
         />
         <View style={styles.contentList}>
-          <StyledButton
+          <ImageBackgroundButton
+            source={require("@/assets/ButtonBackgrounds/img1.jpg")}
             onPress={() => router.push("/menu/mangalist")}
-            theme={theme}
-            textStyle={styles.listButtonText}
-            buttonStyle={styles.listButton}
           >
             GENRES
-          </StyledButton>
-          <StyledButton
+          </ImageBackgroundButton>
+          <ImageBackgroundButton
+            source={require("@/assets/ButtonBackgrounds/img2.jpg")}
             onPress={() => router.push("/menu/mangalist")}
-            theme={theme}
-            textStyle={styles.listButtonText}
-            buttonStyle={styles.listButton}
           >
             CALENDAR
-          </StyledButton>
+          </ImageBackgroundButton>
         </View>
-        <StyledText theme={theme} style={styles.titles}>
-          Recently Updated
-        </StyledText>
+        <StyledText style={styles.titles}>Recently Updated</StyledText>
         {isLoading ? (
           <ActivityIndicator
             size="large"
@@ -193,6 +190,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "white",
     fontFamily: "Poppins_500Medium",
+    justifyContent: "center",
   },
   searchIcon: {
     marginLeft: -30,
@@ -213,7 +211,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   carousel: {
-    position: 'absolute',
+    position: "absolute",
     height: 400,
   },
   seasonsContainer: {
@@ -236,16 +234,29 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   listButton: {
-    paddingHorizontal: 30,
-    paddingVertical: 25,
+    width: "100%",
+    height: "100%",
     borderRadius: 20,
-    backgroundColor: "#eee",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   listButtonText: {
     fontSize: 16,
-    color: "black",
+    color: "white",
     borderBottomWidth: 2,
-    borderBottomColor: "red",
+    borderColor: "red",
+  },
+  imageBackground: {
+    width: 160,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageBackgroundImage: {
+    resizeMode: "cover",
+    borderRadius: 20,
+    opacity: 0.8,
+    borderWidth: 2,
+    borderColor: "grey",
   },
   titles: {
     fontSize: 20,

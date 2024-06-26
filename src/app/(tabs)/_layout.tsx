@@ -6,7 +6,9 @@ const _layout = () => {
     <ThemeProvider>
     <Stack>
       <Stack.Screen name="Menu" options={{ headerShown: false }} />
-      <Stack.Screen name="[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="Context" options={{ headerShown: false }} />
+      <Stack.Screen name="AnimeSearch" options={{ headerShown: false }} />
+      <Stack.Screen name="MangaSearch" options={{ headerShown: false }} />
     </Stack>
   </ThemeProvider>
   )
