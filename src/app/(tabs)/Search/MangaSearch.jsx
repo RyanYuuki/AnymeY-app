@@ -1,23 +1,28 @@
 import { FlatList, ScrollView, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useTheme } from "../../provider/ThemeProvider";
-import { StyledInput, StyledText } from "../../components/Themed";
+import { useTheme } from "@/provider/ThemeProvider";
+import { StyledInput, StyledText } from "@/components/Common/Themed";
 import { Ionicons } from "@expo/vector-icons";
-import SearchItem from "../../components/SearchItem";
+import SearchItem from "@/components/Common/SearchItem";
+import LottieView from "lottie-react-native";
 const Search = () => {
   const { theme } = useTheme();
-  const [searchValue, setSearchValue] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchValue, setSearchValue] = useState(null);
   const [isSearchPressed, setIsSearchPressed] = useState(false);
-  const [searchedData, setSearchedData] = useState([]);
+  const [searchedData, setSearchedData] = useState(null);
   useEffect(() => {
     const searchQueries = async () => {
+      if(searchValue) {
       const response = await fetch(
-        `https://consumet-api-two-nu.vercel.app/meta/anilist/${searchValue}`
+        `https://consumet-api-two-nu.vercel.app/meta/anilist-manga/${searchValue}`
       );
       const result = await response.json();
       if (result && result.results && result.results.length > 0) {
         setSearchedData(result.results);
+        setIsLoading(false);
       }
+    }
     };
     searchQueries();
   }, [searchValue]);
@@ -34,14 +39,27 @@ const Search = () => {
           onChangeValue={(text) => setSearchValue(text)}
           style={{
             ...styles.input,
-            borderColor: isSearchPressed ? theme.primary : ( searchValue ? theme.primary : "grey"),
+            borderColor: isSearchPressed
+              ? theme.primary
+              : searchValue
+              ? theme.primary
+              : "grey",
           }}
         />
         <StyledText
-          color={isSearchPressed ? theme.primary : ( searchValue ? theme.primary : "white")}
-          style={[styles.label, { top: isSearchPressed ? "25%" : ( searchValue ? "25%" : "55%" )}]}
+          color={
+            isSearchPressed
+              ? theme.primary
+              : searchValue
+              ? theme.primary
+              : "white"
+          }
+          style={[
+            styles.label,
+            { top: isSearchPressed ? "25%" : searchValue ? "25%" : "55%" },
+          ]}
         >
-          ANIME
+          MANGA
         </StyledText>
         <Ionicons
           name="search"
@@ -54,11 +72,22 @@ const Search = () => {
         <StyledText isBold={true} style={{ marginVertical: 30 }} size={20}>
           Search Results
         </StyledText>
-        <View style={{ flexGrow: 1, gap: 20 }} >
-          {searchedData.map((data) => (
-            <SearchItem result={data} />
-          ))}
-        </View>
+        {isLoading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+            <LottieView
+              style={{ width: 200, height: 200 }}
+              source={require("@/assets/Animations/loading.json")}
+              autoPlay
+              loop
+            />
+          </View>
+        ) : (
+          <View style={{ flexGrow: 1, gap: 20 }}>
+            {searchedData.map((data) => (
+              <SearchItem result={data} />
+            ))}
+          </View>
+        )}
       </View>
     </ScrollView>
   );

@@ -1,7 +1,7 @@
 // ImageBackgroundButton.js
 import React from "react";
 import { ImageBackground, StyleSheet } from "react-native";
-import { StyledButton } from "./Themed";
+import { StyledButton } from "../Common/Themed";
 
 const ImageBackgroundButton = ({
   source,
@@ -20,6 +20,7 @@ const ImageBackgroundButton = ({
         textStyle={styles.listButtonText}
         buttonStyle={styles.listButton}
         isTransparent={true}
+        color={'white'}
       >
         {children}
       </StyledButton>
@@ -32,7 +33,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.5)",
   },
   listButtonText: {
     fontSize: 16,

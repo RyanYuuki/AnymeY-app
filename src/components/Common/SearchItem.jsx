@@ -20,10 +20,20 @@ const SearchItem = ({ result }) => {
       : "Undefined"
     : "Untitled";
   return (
-    <Link href={`/Context/${id}`} asChild>
+    <Link href={{
+      pathname: `/Context/[id]`,
+      params: {
+        id: id,
+        title: title,
+        status : result.status || 'Releasing',
+        rating: result.rating / 10 || 6.9,
+        image: result?.image || result?.cover || '',
+        cover: result?.cover || result?.image,
+      },
+    }} asChild>
       <Pressable style={styles.carousel}>
           <ImageBackground
-            source={{ uri: result?.cover }}
+            source={{ uri: result?.cover || result?.image }}
             resizeMode="cover"
             style={styles.bodyCover}
             blurRadius={10}
@@ -34,7 +44,8 @@ const SearchItem = ({ result }) => {
               style={styles.carouselImage}
             />
             <View style={styles.textContainer}>
-              <StyledText NotTruncated={true} style={styles.carouselText}>{title}</StyledText>
+              <StyledText NotTruncated={true} isBold={true} style={styles.carouselText}>{title}</StyledText>
+              <StyledText>{result.totalEpisodes}  <StyledText size={14} color={'rgba(255,255,255,0.7)'} >Episodes</StyledText></StyledText>
             </View>
             </View>
           </ImageBackground>

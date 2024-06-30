@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ViewToken } from "react";
 import {
   Text,
   View,
   StyleSheet,
   Image,
   FlatList,
-  ActivityIndicator,
   ScrollView,
 } from "react-native";
-import { useTheme } from "../../../provider/ThemeProvider";
-import { StyledText } from "../../../components/Themed";
-import CarouselItem from "../../../components/Carousel";
+import { useTheme } from "@/provider/ThemeProvider";
+import { StyledText } from "@/components/Common/Themed";
+import CarouselItem from "@/components/Common/CarouselItem";
 import { router } from "expo-router";
-import ImageBackgroundButton from "../../../components/ImageBackgroundButton";
+import ImageBackgroundButton from "@/components/Common/ImageBackgroundButton";
+import CarouselLoader from "@/components/Loaders/CarouselLoader";
+import { MotiView, ModiText } from "moti";
 const Home = () => {
   const [mangaData, setMangaData] = useState([]);
   const [carouselData, setCarouselData] = useState([]);
   const { theme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
-
+  const [isLoadingM, setIsLoadingM] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,7 +27,7 @@ const Home = () => {
           "https://consumet-api-two-nu.vercel.app/meta/anilist/trending"
         );
         const animeResult = await response.json();
-        if (animeResult && animeResult.results.length > 0 ) {
+        if (animeResult && animeResult.results.length > 0) {
           setCarouselData(animeResult.results);
         }
       } catch (error) {
@@ -36,18 +37,24 @@ const Home = () => {
       }
     };
     const fetchMangaData = async () => {
-      for (let i = 20; i <= 30; i++) {
-        const response2 = await fetch(
-          `https://consumet-api-two-nu.vercel.app/meta/anilist-manga/info/${i}?provider=mangadex`
-        );
-        const result2 = await response2.json();
-        if (result2) {
-          if (mangaData.length < 10) {
-            setMangaData((prevMangaData) => [...prevMangaData, result2]);
-          } else {
-            break;
+      try {
+        for (let i = 20; i <= 30; i++) {
+          const response2 = await fetch(
+            `https://consumet-api-two-nu.vercel.app/meta/anilist-manga/info/${i}?provider=mangadex`
+          );
+          const result2 = await response2.json();
+          if (result2) {
+            if (mangaData.length < 10) {
+              setMangaData((prevMangaData) => [...prevMangaData, result2]);
+            } else {
+              break;
+            }
           }
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoadingM(false);
       }
     };
     fetchData();
@@ -56,7 +63,12 @@ const Home = () => {
 
   return (
     <ScrollView style={{ ...styles.screen, backgroundColor: theme.background }}>
-      <View style={styles.header}>
+      <MotiView
+        from={{ translateX: -200, opacity: 0 }}
+        animate={{ translateX: 0, opacity: 1 }}
+        transition={{ type: "timing", duration: 700 }}
+        style={styles.header}
+      >
         <View style={styles.userInfo}>
           <StyledText
             style={{ ...styles.userInfoContent, fontSize: 16, marginTop: 19 }}
@@ -67,7 +79,7 @@ const Home = () => {
             Episode Watched:<Text style={{ color: theme.primary }}> 69</Text>
           </StyledText>
           <StyledText style={styles.userInfoContent}>
-            Chapter Read:<Text style={{ color: theme.primary }} > 6900</Text>
+            Chapter Read:<Text style={{ color: theme.primary }}> 6900</Text>
           </StyledText>
         </View>
 
@@ -77,15 +89,17 @@ const Home = () => {
             style={{ width: 70, height: 70, borderRadius: 50 }}
           />
         </View>
-      </View>
+      </MotiView>
 
-      <View style={styles.body}>
+      <MotiView 
+      from={{ translateX: -200, opacity: 0 }}
+      animate={{ translateX: 0, opacity: 1 }}
+      transition={{ type: "timing", duration: 700 }}
+      style={styles.body}>
         <View style={styles.contentList}>
           <ImageBackgroundButton
             source={{
-              uri:
-                carouselData[1]?.cover ||
-                carouselData[2]?.cover
+              uri: carouselData[1]?.cover || carouselData[2]?.cover,
             }}
             onPress={() => router.push("/menu/mangalist")}
           >
@@ -93,9 +107,7 @@ const Home = () => {
           </ImageBackgroundButton>
           <ImageBackgroundButton
             source={{
-              uri:
-                carouselData[8]?.cover ||
-                carouselData[5]?.cover
+              uri: carouselData[8]?.cover || carouselData[5]?.cover,
             }}
             onPress={() => router.push("/menu/mangalist")}
           >
@@ -107,11 +119,19 @@ const Home = () => {
           Continue Watching
         </StyledText>
         {isLoading ? (
-          <ActivityIndicator size="large" color={theme.text} />
+          <FlatList
+            data={Array(10)}
+            renderItem={() => <CarouselLoader />}
+            contentContainerStyle={styles.carouselContainer}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
         ) : (
           <FlatList
             data={carouselData}
-            renderItem={({ item }) => <CarouselItem fontSize={14} result={item} />}
+            renderItem={({ item }) => (
+              <CarouselItem fontSize={14} result={item} />
+            )}
             contentContainerStyle={styles.carouselContainer}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -121,20 +141,26 @@ const Home = () => {
         <StyledText isBold={true} style={styles.carouselHeading}>
           Continue Reading
         </StyledText>
-        {isLoading ? (
-          <ActivityIndicator size="large" color={theme.text} />
+        {isLoadingM ? (
+          <FlatList
+            data={Array(10)}
+            renderItem={() => <CarouselLoader />}
+            contentContainerStyle={styles.carouselContainer}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
         ) : (
           <FlatList
             data={mangaData}
             renderItem={({ item }) => (
-              <CarouselItem result={item} />
+              <CarouselItem fontSize={14} result={item} />
             )}
             contentContainerStyle={styles.carouselContainer}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
         )}
-      </View>
+      </MotiView>
     </ScrollView>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Image, Pressable } from "react-native";
-import { StyledText } from "./Themed";
+import { StyledText } from "../Common/Themed";
 const Character = ({ result }) => {
   const id = result.id;
   return (

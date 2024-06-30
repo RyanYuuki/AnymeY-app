@@ -5,23 +5,22 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  ActivityIndicator,
   ScrollView,
-  Pressable
+  Pressable,
 } from "react-native";
-import { useTheme } from "../../../provider/ThemeProvider";
+import { useTheme } from "@/provider/ThemeProvider";
 import {
   useFonts,
   Poppins_500Medium,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
 import { Ionicons } from "@expo/vector-icons";
-import Carousel from "../../../components/AnimePageCarousel";
-import CarouselItem from "../../../components/Carousel";
-import { StyledButton, StyledText } from "../../../components/Themed";
-import ImageBackgroundButton from "../../../components/ImageBackgroundButton";
+import Carousel from "@/components/Common/BigCarouselItem";
+import CarouselItem from "@/components/Common/CarouselItem";
+import { StyledButton, StyledText } from "@/components/Common/Themed";
+import ImageBackgroundButton from "@/components/Common/ImageBackgroundButton";
 import { router } from "expo-router";
-
+import LottieView from "lottie-react-native";
 const Manga = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,9 +38,11 @@ const Manga = () => {
         );
         const result2 = await response2.json();
         if (result2) {
+          if (data.length > 5) {
+            setIsLoading(false);
+          }
           if (data.length < 10) {
             setData((prevData) => [...prevData, result2]);
-            setIsLoading(false);
           } else {
             break;
           }
@@ -68,7 +69,7 @@ const Manga = () => {
             ]}
           >
             <Pressable onPress={() => router.push("/MangaSearch")}>
-              <StyledText isBold={true} >MANGA</StyledText>
+              <StyledText isBold={true}>MANGA</StyledText>
             </Pressable>
           </View>
           <TouchableOpacity>
@@ -85,11 +86,16 @@ const Manga = () => {
           />
         </View>
         {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            color={theme.text}
-            style={styles.loader}
-          />
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <LottieView
+              style={{ width: 100, height: 100 }}
+              source={require("@/assets/Animations/loading3.json")}
+              autoPlay
+              loop
+            />
+          </View>
         ) : (
           <FlatList
             data={data}
@@ -121,16 +127,21 @@ const Manga = () => {
         </View>
         <StyledText style={styles.titles}>Trending Novels</StyledText>
         {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            color={theme.text}
-            style={styles.loader}
-          />
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <LottieView
+              style={{ width: 100, height: 100 }}
+              source={require("@/assets/Animations/loading3.json")}
+              autoPlay
+              loop
+            />
+          </View>
         ) : (
           <FlatList
             data={data}
             renderItem={({ item }) => (
-              <CarouselItem isManga={false} result={item} />
+              <CarouselItem result={item} />
             )}
             contentContainerStyle={styles.carouselItem}
             horizontal

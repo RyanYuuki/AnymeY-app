@@ -8,7 +8,7 @@ const index = () => {
     options={{
       headerShown: false,
     }} />
-      <Redirect href={'/Menu/Home'} ></Redirect>
+      <Redirect href={'/Pages/Home'} ></Redirect>
       </>
   )
 }

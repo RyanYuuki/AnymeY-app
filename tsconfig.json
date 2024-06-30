@@ -3,21 +3,11 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/assets/*": [
-        "./assets/*"
-      ],
-      "@/components/*": [
-        "./components/*"
-      ],
+      "@/*": ["./src/*"],
+      "@/assets/*": ["./assets/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/provider/*": ["./src/provider/*"],
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "components/Themed.jsx", "src/app/(tabs)/index.jsx", "src/components/BlurTabBar.tsx"  ]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "src/app/(tabs)/index.jsx"]
 }

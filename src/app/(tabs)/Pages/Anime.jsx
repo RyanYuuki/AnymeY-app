@@ -2,38 +2,27 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
-  TextInput,
   Image,
   TouchableOpacity,
   FlatList,
-  ActivityIndicator,
   ScrollView,
-  ImageBackground,
   Pressable,
 } from "react-native";
-import { useTheme } from "../../../provider/ThemeProvider";
-import {
-  useFonts,
-  Poppins_500Medium,
-  Poppins_700Bold,
-} from "@expo-google-fonts/poppins";
+import { useTheme } from "@/provider/ThemeProvider";
 import { Ionicons } from "@expo/vector-icons";
-import Carousel from "../../../components/AnimePageCarousel";
-import CarouselItem from "../../../components/Carousel";
-import { StyledButton, StyledText } from "../../../components/Themed";
-import ImageBackgroundButton from "../../../components/ImageBackgroundButton";
-import { Link, router } from "expo-router";
-
+import Carousel from "@/components/Common/BigCarouselItem";
+import CarouselItem from "@/components/Common/CarouselItem";
+import { StyledButton, StyledText } from "@/components/Common/Themed";
+import ImageBackgroundButton from "@/components/Common/ImageBackgroundButton";
+import {router } from "expo-router";
+import SearchItem from "@/components/Common/SearchItem";
+import LottieView from "lottie-react-native";
 const Anime = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [inputValue, setInputValue] = useState("");
   const { theme } = useTheme();
   const seasonsData = ["This Season", "Next Season", "Previous Season"];
-  const [fontsLoaded] = useFonts({
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
+  const [popularAnimeData, setPopularAnimeData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,9 +30,16 @@ const Anime = () => {
         const response = await fetch(
           "https://consumet-api-two-nu.vercel.app/meta/anilist/trending"
         );
-        const result = await response.json();
-        if (result && result.results && result.results.length > 0) {
-          setData(result.results);
+        const response2 = await fetch(
+          "https://consumet-api-two-nu.vercel.app/meta/anilist/popular"
+        );
+        const animeResult = await response.json();
+        const result2 = await response2.json();
+        if (animeResult && animeResult.results && animeResult.results.length > 0) {
+          setData(animeResult.results);
+        }
+        if (result2 && result2.results && result2.results.length > 0) {
+          setPopularAnimeData(result2.results);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -65,13 +61,10 @@ const Anime = () => {
       <View style={styles.header}>
         <View style={styles.inputBox}>
           <View
-            style={[
-              styles.input,
-              { color: theme.text, backgroundColor: "rgba(0,0,0,0.5)" },
-            ]}
+            style={[styles.input, { backgroundColor: theme.transparentBtn }]}
           >
             <Pressable onPress={() => router.push("/AnimeSearch")}>
-              <StyledText isBold={true} >ANIME</StyledText>
+              <StyledText isBold={true}>ANIME</StyledText>
             </Pressable>
           </View>
           <TouchableOpacity>
@@ -88,18 +81,20 @@ const Anime = () => {
           />
         </View>
         {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            color={theme.text}
-            style={styles.loader}
-          />
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <LottieView
+              style={{ width: 100, height: 100 }}
+              source={require("@/assets/Animations/loading3.json")}
+              autoPlay
+              loop
+            />
+          </View>
         ) : (
           <FlatList
             data={data}
             renderItem={({ item }) => <Carousel result={item} />}
-            keyExtractor={(item, index) =>
-              item.id?.toString() || index.toString()
-            }
             contentContainerStyle={styles.carousel}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -121,7 +116,6 @@ const Anime = () => {
               {item}
             </StyledButton>
           )}
-          keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.seasonsContainer}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -140,26 +134,49 @@ const Anime = () => {
             CALENDAR
           </ImageBackgroundButton>
         </View>
-        <StyledText style={styles.titles}>Recently Updated</StyledText>
+        <StyledText isBold={true} style={styles.titles}>
+          Recently Updated
+        </StyledText>
         {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            color={theme.text}
-            style={styles.loader}
-          />
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <LottieView
+              style={{ width: 100, height: 100 }}
+              source={require("@/assets/Animations/loading3.json")}
+              autoPlay
+              loop
+            />
+          </View>
         ) : (
           <FlatList
             data={data}
             renderItem={({ item }) => (
               <CarouselItem isManga={false} result={item} />
             )}
-            keyExtractor={(item, index) =>
-              item.id?.toString() || index.toString()
-            }
             contentContainerStyle={styles.carouselItem}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
+        )}
+      </View>
+      <StyledText style={styles.titles} isBold={true}>
+        Popular Anime
+      </StyledText>
+      <View style={styles.popularSection}>
+        {isLoading && !popularAnimeData ? (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <LottieView
+              style={{ width: 100, height: 100 }}
+              source={require("@/assets/Animations/loading3.json")}
+              autoPlay
+              loop
+            />
+          </View>
+        ) : (
+          popularAnimeData.map((item) => <SearchItem result={item} />)
         )}
       </View>
     </ScrollView>
@@ -189,7 +206,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 1,
     borderColor: "white",
-    fontFamily: "Poppins_500Medium",
     justifyContent: "center",
   },
   searchIcon: {
@@ -208,7 +224,6 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    paddingHorizontal: 10,
   },
   carousel: {
     position: "absolute",
@@ -233,43 +248,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     marginVertical: 20,
   },
-  listButton: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  listButtonText: {
-    fontSize: 16,
-    color: "white",
-    borderBottomWidth: 2,
-    borderColor: "red",
-  },
-  imageBackground: {
-    width: 160,
-    height: 80,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageBackgroundImage: {
-    resizeMode: "cover",
-    borderRadius: 20,
-    opacity: 0.8,
-    borderWidth: 2,
-    borderColor: "grey",
-  },
   titles: {
     fontSize: 20,
     marginLeft: 20,
   },
   carouselItem: {
-    height: 500,
+    height: 300,
     marginVertical: 20,
     paddingRight: 20,
-    paddingBottom: 100,
   },
-  loader: {
-    marginTop: 20,
+  popularSection: {
+    flex: 1,
+    gap: 20,
+    marginVertical: 20,
+    width: "90%",
+    alignSelf: "center",
   },
 });
 

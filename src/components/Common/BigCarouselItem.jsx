@@ -8,7 +8,7 @@ import {
   Animated,
 } from "react-native";
 import { Easing } from "react-native-reanimated";
-import { useTheme } from "../provider/ThemeProvider";
+import { useTheme } from "../../provider/ThemeProvider";
 import {
   useFonts,
   Poppins_500Medium,
@@ -17,16 +17,16 @@ import {
 import { Link } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyledText } from "./Themed";
-
+import LottieView from "lottie-react-native";
 const Carousel = ({ result, isManga }) => {
   const id = result.id;    
+  const title = result?.title?.english || result?.title?.romaji ||  result?.title?.native || result?.title?.userPreffered || "Untitled";
   const { theme } = useTheme();
   const [fontsLoaded] = useFonts({
     Poppins_500Medium,
     Poppins_700Bold,
   });
   const scrollX = useRef(new Animated.Value(0)).current;
-
   useEffect(() => {
     const startAnimation = () => {
       Animated.loop(
@@ -50,7 +50,17 @@ const Carousel = ({ result, isManga }) => {
   }, [scrollX]);
 
   return (
-    <Link href={`/Context/${id}`} asChild>
+    <Link href={{
+      pathname: `/Context/[id]`,
+      params: {
+        id: id,
+        title: title,
+        status : result.status || 'Releasing',
+        rating: result.rating / 10 || 6.9,
+        image: result?.image || result?.cover ,
+        cover: result?.cover || result?.image,
+      },
+    }} asChild>
       <Pressable style={styles.carousel}>
         <View style={styles.imageContainer}>
           <Animated.Image
@@ -79,7 +89,7 @@ const Carousel = ({ result, isManga }) => {
               color={"white"}
               style={[styles.carouselText]}
             >
-              {result?.title.romaji || result?.title.english}
+              {title}
             </StyledText>
             <Text style={[styles.carouselText, { color: "#df5198" }]}>
               {result.status}
@@ -97,13 +107,13 @@ const Carousel = ({ result, isManga }) => {
               Episodes
             </Text>
             <View style={styles.genres}>
-              {result.genres.map((data, i) =>
+              { result.genres ? result.genres.map((data, i) =>
                 i < 3 ? (
                   <Text style={styles.genre} key={i}>
                     {data} {i === 2 ? "" : "•"}
                   </Text>
                 ) : null
-              )}
+              )  : <StyledText>??</StyledText> }
             </View>
           </View>
         </View>
