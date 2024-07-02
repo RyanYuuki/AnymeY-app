@@ -199,6 +199,7 @@ export default function VideoPlayer() {
             setSeekBar(0);
             return;
           }
+          console.log(status);
           const durationMillis = status.durationMillis;
           const positionMillis = status.positionMillis;
           const durationSeconds = Math.floor(durationMillis / 1000);
@@ -222,7 +223,7 @@ export default function VideoPlayer() {
           setVideoDuration(status.durationMillis);
           setSeekBar(status.positionMillis / status.durationMillis);
         }}
-        useNativeControls={false}
+        useNativeControls={true}
         style={styles.video}
       />
     </Pressable>

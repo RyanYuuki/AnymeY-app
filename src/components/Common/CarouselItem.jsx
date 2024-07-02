@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Image, Pressable } from "react-native";
 import { StyledText } from "./Themed";
 import { Link } from "expo-router";
-const CarouselItem = ({ result, fontSize }) => {
+const CarouselItem = ({ result, fontSize, isManga }) => {
   const id = result.id;
   const title =
     result.title
@@ -16,14 +16,12 @@ const CarouselItem = ({ result, fontSize }) => {
       : "Untitled";
   return (
     <Link href={{
-      pathname: `/Context/[id]`,
+      pathname: isManga ? '/Context/Reader/[id]' : `/Context/[id]`,
       params: {
         id: id,
         title: title,
-        status : result.status || 'Releasing',
-        rating: result.rating / 10 || 6.9,
-        image: result?.image || result?.cover || '',
-        cover: result?.cover || result?.image,
+        Manga : isManga,
+        chaptersInfo : isManga ? result.chapters : null,
       },
     }} asChild>
       <Pressable style={styles.carousel}>

@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "../../provider/QueryProvider";
 import { StyledText } from "../Common/Themed";
 
-const TabBar = () => {
+const TabBar = ({ isManga }) => {
   const { theme } = useTheme();
   const { isSearchSelected, setSearchSelected } = useQuery();
 
@@ -69,10 +69,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    width: "100%",
-    height: 80,
-    bottom: 0,
+    width: "60%",
+    bottom: 20,
+    padding: 10,
     zIndex: 1,
+    alignSelf: 'center',
+    borderRadius: 50
   },
   icons: {
     borderRadius: 50,

@@ -54,12 +54,7 @@ const StreamingPage = ({ data }) => {
   return (
     <>
       {!isQualityMenuEnvoked ? (
-        <MotiView
-          from={{ translateX: 100 }}
-          animate={{ translateX: 0 }}
-          transition={{ type: "timing", duration: 500 }}
-          style={styles.container}
-        >
+        <View style={styles.container}>
           <StyledText isBold={true} size={20} style={styles.headerText}>
             Episodes
           </StyledText>
@@ -72,7 +67,7 @@ const StreamingPage = ({ data }) => {
               />
             ))}
           </View>
-        </MotiView>
+        </View>
       ) : (
         <View style={styles.qualitySection}>
           <TouchableOpacity

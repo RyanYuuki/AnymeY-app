@@ -38,11 +38,9 @@ const Manga = () => {
         );
         const result2 = await response2.json();
         if (result2) {
-          if (data.length > 5) {
-            setIsLoading(false);
-          }
           if (data.length < 10) {
             setData((prevData) => [...prevData, result2]);
+            setIsLoading(false);
           } else {
             break;
           }
@@ -99,8 +97,7 @@ const Manga = () => {
         ) : (
           <FlatList
             data={data}
-            renderItem={({ item }) => <Carousel result={item} />}
-            isManga={true}
+            renderItem={({ item }) => <Carousel isManga={true} result={item} />}
             contentContainerStyle={styles.carousel}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -141,7 +138,7 @@ const Manga = () => {
           <FlatList
             data={data}
             renderItem={({ item }) => (
-              <CarouselItem result={item} />
+              <CarouselItem isManga={true} result={item} />
             )}
             contentContainerStyle={styles.carouselItem}
             horizontal

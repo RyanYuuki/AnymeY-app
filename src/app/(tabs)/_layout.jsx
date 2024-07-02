@@ -5,11 +5,11 @@ const _layout = () => {
   return (
     <ThemeProvider>
     <Stack>
-      <Stack.Screen name="Pages" options={{ headerShown: false }} />
-      <Stack.Screen name="Search/AnimeSearch" options={{ headerShown: false }} />
-      <Stack.Screen name="Search/MangaSearch" options={{ headerShown: false }} />
-      <Stack.Screen name="Context/[id]" options={{ headerShown: false }} />
-      <Stack.Screen name="Context/Player/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="Pages" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="Search/AnimeSearch" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="Search/MangaSearch" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="Context/[id]" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="Context/Player/[id]" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
     </Stack>
   </ThemeProvider>
   )

@@ -3,7 +3,7 @@ import React from 'react'
 import LottieView from 'lottie-react-native'
 const LottieLoader = () => {
   return (
-    <View style={{ flex : 1, backgroundColor: 'transprent' }}>
+    <View style={{ flex : 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
     <LottieView
       style={{
         alignSelf: 'center',

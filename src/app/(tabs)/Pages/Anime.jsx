@@ -94,7 +94,7 @@ const Anime = () => {
         ) : (
           <FlatList
             data={data}
-            renderItem={({ item }) => <Carousel result={item} />}
+            renderItem={({ item }) => <Carousel isManga={false} result={item} />}
             contentContainerStyle={styles.carousel}
             horizontal
             showsHorizontalScrollIndicator={false}

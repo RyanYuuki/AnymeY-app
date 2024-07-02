@@ -49,7 +49,7 @@ function RootLayoutNav() {
     <QueryProvider>
       <ThemeProvider>
         <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
       </ThemeProvider>
     </QueryProvider>

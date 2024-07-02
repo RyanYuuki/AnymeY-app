@@ -130,7 +130,7 @@ const Home = () => {
           <FlatList
             data={carouselData}
             renderItem={({ item }) => (
-              <CarouselItem fontSize={14} result={item} />
+              <CarouselItem fontSize={14} isManga={false} result={item} />
             )}
             contentContainerStyle={styles.carouselContainer}
             horizontal
@@ -153,7 +153,7 @@ const Home = () => {
           <FlatList
             data={mangaData}
             renderItem={({ item }) => (
-              <CarouselItem fontSize={14} result={item} />
+              <CarouselItem fontSize={14} isManga={true} result={item} />
             )}
             contentContainerStyle={styles.carouselContainer}
             horizontal

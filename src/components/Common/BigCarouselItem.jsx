@@ -59,6 +59,8 @@ const Carousel = ({ result, isManga }) => {
         rating: result.rating / 10 || 6.9,
         image: result?.image || result?.cover ,
         cover: result?.cover || result?.image,
+        Manga : isManga,
+        chaptersInfo : isManga ? result.chapters : null,
       },
     }} asChild>
       <Pressable style={styles.carousel}>
